@@ -19,7 +19,7 @@ public class Player {
 		random = new Random();
 		rect = new Rect(random.nextFloat(Form.instance.windowSize.x,Form.instance.windowSize.width - 10),
 				        random.nextFloat(Form.instance.windowSize.y,Form.instance.windowSize.height - 10),
-				        20,20);
+				        20,20,direction,color);
 		
 		this.objectStatic = objectStatic;
 		

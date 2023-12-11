@@ -1,5 +1,8 @@
 package GL;
 
+import java.awt.Color;
+import java.awt.Point;
+
 //classe para criar os retangulos
 public class Rect {
 	
@@ -7,15 +10,18 @@ public class Rect {
 	public float y;
 	public float height;
 	public float width;
+	public Point direction;
+	public Color color;
 	
 	//construtor
-	public Rect(float x ,float y,float width,float height)
+	public Rect(float x ,float y,float width,float height,Point direction,Color color)
 	{
 		this.x = x;
 		this.y = y;
 		this.height = height;
 		this.width = width;
-		
+		this.direction = direction;
+		this.color = color;
 	}
 	
 	//testa colisao entre dois retangulos
@@ -26,6 +32,7 @@ public class Rect {
 		{
 			
 			return true;
+			
 		}else
 		{
 			return false;

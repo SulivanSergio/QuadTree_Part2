@@ -22,7 +22,7 @@ public class ObjectDynamics {
 		random = new Random();
 		rect = new Rect(random.nextFloat(Form.instance.windowSize.x,Form.instance.windowSize.width - 10),
 				        random.nextFloat(Form.instance.windowSize.y,Form.instance.windowSize.height - 10),
-				        10,10);
+				        10,10,direction,color);
 		
 		this.objectStatic = objectStatic;
 		this.player = player;
@@ -33,15 +33,7 @@ public class ObjectDynamics {
 	//atualiza o desenho
 	public void Draw(Graphics g,Color colorAux)
 	{
-		if(colorAux == Color.red)
-		{
-			timerColor = 0;
-			color = colorAux;
-		}
-		if(timerColor > timerColorMax)
-		{
-			color = colorAux;
-		}
+		
 		//g.setColor(color);
 		//g.fillRect((int)rect.x,(int)rect.y,(int)rect.width,(int)rect.height);
 	}
@@ -50,7 +42,26 @@ public class ObjectDynamics {
 	public void Update(float gameTime)
 	{
 		Move(gameTime);
+		
+		if(rect.color == Color.red)
+		{
+			
+			if(timerColor > timerColorMax)
+			{
+				color = Color.red;
+				timerColor = 0;
+			}
+		}
+		
 		timerColor += gameTime;
+		
+		
+		if(timerColor > timerColorMax)
+		{
+			color = Color.blue;
+			rect.color = Color.blue;
+		}
+		
 	}
 	
 	//atualiza a movimentação dos objetos

@@ -21,7 +21,7 @@ public class Form{
 	public Form()
 	{
 		instance = this;
-		windowSize = new Rect(50,65,1000,800);
+		windowSize = new Rect(50,65,1000,800,new Point(0,0),Color.black);
 		keyboard = new Keyboard();
 		
 		CreateJFrame();

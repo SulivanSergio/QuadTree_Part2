@@ -2,6 +2,7 @@ package GL;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Point;
 import java.util.ArrayList;
 
 public class QuadTree {
@@ -39,19 +40,19 @@ public class QuadTree {
 		{
 			
 			
-			Rect no = new Rect(dimension.x, dimension.y,dimension.width/2,dimension.height/2);
+			Rect no = new Rect(dimension.x, dimension.y,dimension.width/2,dimension.height/2,new Point(0,0),Color.black);
 			noroeste = new QuadTree(no);
 			//noroeste.Draw(Form.instance.window.getGraphics());
 			
-			Rect ne = new Rect(dimension.x + dimension.width/2, dimension.y,dimension.width/2,dimension.height/2);
+			Rect ne = new Rect(dimension.x + dimension.width/2, dimension.y,dimension.width/2,dimension.height/2,new Point(0,0),Color.black);
 			nordeste = new QuadTree(ne);
 			//nordeste.Draw(Form.instance.window.getGraphics());
 			
-			Rect so = new Rect(dimension.x, dimension.y + dimension.height/2,dimension.width/2,dimension.height/2);
+			Rect so = new Rect(dimension.x, dimension.y + dimension.height/2,dimension.width/2,dimension.height/2,new Point(0,0),Color.black);
 			sudoeste = new QuadTree(so);
 			//sudoeste.Draw(Form.instance.window.getGraphics());
 			
-			Rect se = new Rect(dimension.x + dimension.width/2, dimension.y + dimension.height/2,dimension.width/2,dimension.height/2);
+			Rect se = new Rect(dimension.x + dimension.width/2, dimension.y + dimension.height/2,dimension.width/2,dimension.height/2,new Point(0,0),Color.black);
 			sudeste = new QuadTree(se);
 			//sudeste.Draw(Form.instance.window.getGraphics());
 			
@@ -108,7 +109,7 @@ public class QuadTree {
 			}
 		}
 		
-		if(this.objects.size() < this.capacity)
+		if(this.objects.size() < this.capacity && !this.divided)
 		{
 			
 			this.objects.add(rect);
@@ -186,30 +187,23 @@ public class QuadTree {
 	}
 	
 	//faz uma busca para retornar em qual retangulo o objeto esta
-	public void Search(QuadTree quad,Rect rect) 
+	public ArrayList<Rect> Search(QuadTree quad) 
 	{
 		
-		if(quad.dimension.BoundingCollision(rect,quad.dimension))
+		if(!quad.divided)
 		{
-			
-			for(int i = 0; i< quad.objects.size(); i++)
-			{
-				if(quad.objects.get(i) == rect)
-				{
-					Level2.CollectionObjects(quad.dimension);
-					return;
-				}
+			Level2.CollectionObjects(quad.objects);
+			Level2.instance.Colision();
 				
-			}
-			if(quad.divided)
-			{
-				this.noroeste.Search(quad.noroeste,rect);
-				this.nordeste.Search(quad.nordeste,rect);
-				this.sudoeste.Search(quad.sudoeste,rect);
-				this.sudeste.Search(quad.sudeste,rect);
-			}
+		}else {
+			
+			this.noroeste.Search(quad.noroeste);
+			this.nordeste.Search(quad.nordeste);
+			this.sudoeste.Search(quad.sudoeste);
+			this.sudeste.Search(quad.sudeste);
+			
 		}
-		
+		return null;
 	}
 	
 }

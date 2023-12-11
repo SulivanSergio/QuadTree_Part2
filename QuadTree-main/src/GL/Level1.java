@@ -8,7 +8,7 @@ public class Level1 {
 	
 
 	
-	ObjectDynamics[] objectDynamics = new ObjectDynamics[200];
+	ObjectDynamics[] objectDynamics = new ObjectDynamics[600];
 	ObjectStatic[] objectStatic = new ObjectStatic[100];
 	Player player;
 	Game1 game1;
@@ -117,13 +117,13 @@ public class Level1 {
 			{
 				if(objectDynamics[i].rect.BoundingCollision(objectDynamics[i].rect, objectDynamics[j].rect) && i != j)
 				{
-					objectDynamics[i].Draw(Form.instance.window.getGraphics(), Color.red);
+					objectDynamics[i].rect.color = Color.red;
 					objectDynamics[i].direction.x *= -1;
 					objectDynamics[i].direction.y *= -1;
 					objectDynamics[i].rect.x +=  0.5f * objectDynamics[i].direction.x;
 					objectDynamics[i].rect.y += 0.5f * objectDynamics[i].direction.y;
 					
-					objectDynamics[j].Draw(Form.instance.window.getGraphics(), Color.red);
+					objectDynamics[j].rect.color = Color.red;
 					objectDynamics[j].direction.x *= -1;
 					objectDynamics[j].direction.y *= -1;
 					objectDynamics[j].rect.x +=  0.5f * objectDynamics[j].direction.x;

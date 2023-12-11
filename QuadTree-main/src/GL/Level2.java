@@ -2,23 +2,28 @@ package GL;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Point;
+import java.util.ArrayList;
 
 public class Level2 {
 
 	
 
 	
-	ObjectDynamics[] objectDynamics = new ObjectDynamics[200];
+	ObjectDynamics[] objectDynamics = new ObjectDynamics[600];
 	ObjectStatic[] objectStatic = new ObjectStatic[100];
 	Player player;
 	Game1 game1;
 	QuadTree quadTree;
-	static Rect rectAux;
+	static ArrayList<Rect> rectAux;
 	Z_Buffer[] zBuffer;
 	
+	public static Level2 instance;
 	
 	//construtor
 	public Level2(Game1 game1) {
+		
+		instance = this;
 		
 		this.game1 = game1;
 		
@@ -34,7 +39,7 @@ public class Level2 {
 		}
 		
 		//criação da quadTree
-		quadTree = new QuadTree(new Rect(Form.instance.windowSize.x,Form.instance.windowSize.y,Form.instance.windowSize.width,Form.instance.windowSize.height));
+		quadTree = new QuadTree(new Rect(Form.instance.windowSize.x,Form.instance.windowSize.y,Form.instance.windowSize.width,Form.instance.windowSize.height,new Point(0,0),Color.black));
 		
 		//criação do buffer
 		zBuffer = new Z_Buffer[objectStatic.length + objectDynamics.length + 1];
@@ -80,11 +85,17 @@ public class Level2 {
 		float speedUP = 0;
 		
 		CODynamicsQuadTree();
-		COStaticQuadTree();
-		COPlayerQuadTree();
-		CollisionStaticAndPlayerQuadTree();
+		
 		
 		player.Update(gameTime);
+		
+		
+		long fim = System.currentTimeMillis();
+		speedUP = 1.0f/ (float)(fim - inicio);
+		
+		System.out.println("SpeedUP: " + speedUP);
+		
+		
 		
 		//desenhar do buffer
 		DrawBuffer();
@@ -92,19 +103,11 @@ public class Level2 {
 		//limpeza da quadtree
 		quadTree.ClearSubdivide(quadTree);
 		
-
-		long fim = System.currentTimeMillis();
-		speedUP = 1.0f/ (float)(fim - inicio);
-		
-		System.out.println("SpeedUP: " + speedUP);
-		
 		if(Form.instance.keyboard.Return_Esc())
 		{
 			Form.instance.ClearGrapphics(Form.instance.window.getGraphics(), new Color(100,100,100));
 			game1.scene = SCENE_MANAGER.MENU;
 		}
-		
-		
 		
 	}
 	
@@ -133,116 +136,44 @@ public class Level2 {
 	//colisão dos objetos dinamicos da quadTree
 	private void CODynamicsQuadTree() 
 	{
-		for(int i = 0; i < objectDynamics.length; i++)
-		{
-			quadTree.Search(quadTree, objectDynamics[i].rect);
+		
+		quadTree.Search(quadTree);
 			
-			for(int j = 0; j < objectDynamics.length; j++)
+	}
+	
+	public void Colision() {
+		
+		for(int i = 0; i < rectAux.size(); i++)
+		{
+			for(int j = 0; j < rectAux.size(); j++)
 			{
 				
-				if(objectDynamics[j].rect.BoundingCollision(objectDynamics[j].rect, rectAux))
+				if(rectAux.get(i).BoundingCollision(rectAux.get(i), rectAux.get(j)) && rectAux.get(i) != rectAux.get(j))
 				{
-					if(objectDynamics[i].rect.BoundingCollision(objectDynamics[i].rect, objectDynamics[j].rect) && objectDynamics[i].rect != objectDynamics[j].rect)
-					{
-						objectDynamics[i].Draw(Form.instance.window.getGraphics(), Color.red);
-						objectDynamics[i].direction.x *= -1;
-						objectDynamics[i].direction.y *= -1;
-						objectDynamics[i].rect.x +=  0.5f * objectDynamics[i].direction.x;
-						objectDynamics[i].rect.y += 0.5f * objectDynamics[i].direction.y;
-						
-						objectDynamics[j].Draw(Form.instance.window.getGraphics(), Color.red);
-						objectDynamics[j].direction.x *= -1;
-						objectDynamics[j].direction.y *= -1;
-						objectDynamics[j].rect.x +=  0.5f * objectDynamics[j].direction.x;
-						objectDynamics[j].rect.y += 0.5f * objectDynamics[j].direction.y;
-					}
+					
+					rectAux.get(i).color = Color.red;
+					rectAux.get(i).direction.x *= -1;
+					rectAux.get(i).direction.y *= -1;
+					rectAux.get(i).x +=  0.5f * rectAux.get(i).direction.x;
+					rectAux.get(i).y += 0.5f * rectAux.get(i).direction.y;
+					
+					rectAux.get(j).color = Color.red;
+					rectAux.get(j).direction.x *= -1;
+					rectAux.get(j).direction.y *= -1;
+					rectAux.get(j).x +=  0.5f * rectAux.get(j).direction.x;
+					rectAux.get(j).y += 0.5f * rectAux.get(j).direction.y;
+					
 					
 					
 				}
 			
 			}
-			
 		}
-	
 	}
 
-	//colisão dos objetos estaticos da quadTree
-	private void COStaticQuadTree() 
-	{
-		for(int i = 0; i < objectDynamics.length; i++)
-		{
-			quadTree.Search(quadTree, objectDynamics[i].rect);
-			
-			for(int j = 0; j < objectStatic.length; j++)
-			{
-				
-				if(objectStatic[j].rect.BoundingCollision(objectStatic[j].rect, rectAux))
-				{
-					if(objectDynamics[i].rect.BoundingCollision(objectDynamics[i].rect, objectStatic[j].rect))
-					{
-						objectDynamics[i].Draw(Form.instance.window.getGraphics(), Color.red);
-						objectDynamics[i].direction.x *= -1;
-						objectDynamics[i].direction.y *= -1;
-						objectDynamics[i].rect.x +=  0.5f * objectDynamics[i].direction.x;
-						objectDynamics[i].rect.y += 0.5f * objectDynamics[i].direction.y;
-						
-					}
-					
-					
-				}
-			
-			}
-			
-		}
 	
-	}
-	//colisão do player com os objetos dinamicos da quadTree
-	private void COPlayerQuadTree() 
-	{
-		for(int i = 0; i < objectDynamics.length; i++)
-		{
-			quadTree.Search(quadTree, objectDynamics[i].rect);
-			
-			if(player.rect.BoundingCollision(player.rect, rectAux))
-			{
-				if(objectDynamics[i].rect.BoundingCollision(objectDynamics[i].rect, player.rect))
-				{
-					objectDynamics[i].Draw(Form.instance.window.getGraphics(), Color.red);
-					objectDynamics[i].direction.x *= -1;
-					objectDynamics[i].direction.y *= -1;
-					objectDynamics[i].rect.x +=  0.5f * objectDynamics[i].direction.x;
-					objectDynamics[i].rect.y += 0.5f * objectDynamics[i].direction.y;
-					
-				}
-			}
-						
-		}
-	
-	}
-	//colisão do player com os objetos estaticos da quadTree
-	public void CollisionStaticAndPlayerQuadTree() {
-		
-		for(int i = 0; i< objectStatic.length; i++)
-		{
-			quadTree.Search(quadTree, player.rect);
-			
-			if(objectStatic[i].rect.BoundingCollision(objectStatic[i].rect, rectAux))
-			{
-				if(objectStatic[i].rect.BoundingCollision(objectStatic[i].rect, player.rect))
-				{
-					
-					player.direction.x *= -1;
-					player.direction.y *= -1;
-					player.rect.x += 0.5f * player.direction.x ;
-					player.rect.y += 0.5f * player.direction.y ;
-				}
-			}
-		}
-		
-	}
-
-	//retorna o quadrado que esta o objeto buscado na arvore
-	public static void CollectionObjects(Rect rects) {
+	//retorna a lista de objetos que esta no quadrado da folha da arvore
+	public static void CollectionObjects(ArrayList<Rect> rects) {
 
 		rectAux = rects;
 		
