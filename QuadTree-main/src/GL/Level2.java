@@ -84,7 +84,7 @@ public class Level2 {
 		long inicio = System.currentTimeMillis();
 		float speedUP = 0;
 		
-		CODynamicsQuadTree();
+		COBuscaQuadTree();
 		
 		
 		player.Update(gameTime);
@@ -133,8 +133,8 @@ public class Level2 {
 	
 	
 	
-	//colisão dos objetos dinamicos da quadTree
-	private void CODynamicsQuadTree() 
+	//busca dos objetos na QuadTree para efetuar a colisão 
+	private void COBuscaQuadTree() 
 	{
 		
 		quadTree.Search(quadTree);
